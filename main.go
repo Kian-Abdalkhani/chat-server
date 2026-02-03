@@ -10,6 +10,8 @@ import (
 	"example.com/chat-server/message"
 )
 
+const PORT int = 9000
+
 func login(c net.Conn, hubChan chan message.Message, clientRegChan chan client.Client, clientUnregChan chan client.Client) {
 	r := bufio.NewScanner(c)
 	w := bufio.NewWriter(c)
@@ -59,11 +61,13 @@ func hub(hubChan chan message.Message, clientRegChan chan client.Client, clientU
 }
 
 func main() {
-	ln, err := net.Listen("tcp4", ":9000")
+	address := fmt.Sprintf(":%v", PORT)
+
+	ln, err := net.Listen("tcp4", address)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Listening on port 9000")
+	fmt.Printf("Listening at %s \n", address)
 
 	// create the Hub channel for communicating with all the clients
 	hubChan := make(chan message.Message)
